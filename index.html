@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decatur Land Clearing & Brush Hogging Directory</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0A4A3C 0%, #062C24 100%);
+      color: #333;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0D5C4B 0%, #0A4A3C 100%);
+      color: white;
+      padding: 3rem 2rem;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    header p {
+      font-size: 1.1rem;
+      opacity: 0.95;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .filters {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 1rem;
+      align-items: end;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .filter-group label {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #0A4A3C;
+    }
+
+    .filter-group input,
+    .filter-group select {
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    .filter-group input:focus,
+    .filter-group select:focus {
+      outline: none;
+      border-color: #F2B759;
+      box-shadow: 0 0 0 3px rgba(242, 183, 89, 0.2);
+    }
+
+    button.search-btn {
+      background: #F2B759;
+      color: #1a1a1a;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 700;
+      transition: background 0.3s;
+    }
+
+    button.search-btn:hover {
+      background: #D99A3A;
+    }
+
+    .listings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .listing-card {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .listing-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .listing-card.featured {
+      border: 3px solid #F2B759;
+      background: linear-gradient(to bottom, #FFF8EE, white);
+    }
+
+    .listing-card.featured::before {
+      content: 'â­ FEATURED';
+      display: block;
+      background: #F2B759;
+      color: #1a1a1a;
+      text-align: center;
+      padding: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .listing-content {
+      padding: 1.5rem;
+    }
+
+    .listing-card h3 {
+      color: #0A4A3C;
+      margin-bottom: 0.5rem;
+      font-size: 1.3rem;
+    }
+
+    .listing-city {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .service-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .service-tag {
+      background: #FFF3DC;
+      color: #7A4A00;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .listing-contact {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .contact-item a {
+      color: #0A4A3C;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .contact-item a:hover {
+      text-decoration: underline;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: white;
+      font-size: 1.2rem;
+    }
+
+    .error {
+      background: #ffebee;
+      color: #c62828;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      border-left: 4px solid #c62828;
+    }
+
+    .no-results {
+      background: white;
+      padding: 3rem;
+      text-align: center;
+      border-radius: 8px;
+      color: #666;
+    }
+
+    footer {
+      background: rgba(0,0,0,0.2);
+      color: white;
+      text-align: center;
+      padding: 2rem;
+      margin-top: 3rem;
+    }
+
+    .footer-ads {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      margin-top: 2rem;
+      text-align: center;
+      color: #666;
+      min-height: 250px;
+    }
+
+    @media (max-width: 768px) {
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+      header h1 {
+        font-size: 1.8rem;
+      }
+
+      .listings-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ð Decatur Land Clearing Directory</h1>
+    <p>Find trusted brush hogging and land clearing services in Morgan County, Alabama</p>
+  </header>
+
+  <div class="container">
+    <div class="filters">
+      <div class="filter-group">
+        <label for="city-filter">City:</label>
+        <input type="text" id="city-filter" placeholder="e.g., Decatur, Somerville">
+      </div>
+      <div class="filter-group">
+        <label for="service-filter">Service Type:</label>
+        <select id="service-filter">
+          <option value="">All Services</option>
+          <option value="brush hogging">Brush Hogging</option>
+          <option value="land clearing">Land Clearing</option>
+          <option value="grading">Grading</option>
+          <option value="mulching">Mulching</option>
+          <option value="excavation">Excavation</option>
+        </select>
+      </div>
+      <button class="search-btn" onclick="filterListings()">Search</button>
+    </div>
+
+    <div id="listings-container" class="listings-grid">
+      <div class="loading">Loading listings...</div>
+    </div>
+
+    <!-- Google AdSense ad placement -->
+    <div class="footer-ads" id="ad-space-1">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle"
+        style="display:block"
+        data-ad-client="ca-pub-YOUR-ADSENSE-ID"
+        data-ad-slot="YOUR-AD-SLOT"
+        data-ad-format="auto"
+        data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 Decatur Land Clearing Directory. All listings are independently verified.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // Initialize Supabase
+    const SUPABASE_URL = 'https://gikgrefbmtlermefsnlv.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_A2SanjKhfGaDJOvMGd0v7Q_0tOmVwap';
+    const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let allListings = [];
+
+    async function loadListings() {
+      try {
+        const { data, error } = await sbClient
+          .from('listings')
+          .select('*')
+          .eq('deleted', false)
+          .eq('region', 'Decatur')
+          .order('featured', { ascending: false })
+          .order('date_added', { ascending: false });
+
+        if (error) throw error;
+
+        allListings = data || [];
+        displayListings(allListings);
+      } catch (error) {
+        console.error('Error loading listings:', error);
+        document.getElementById('listings-container').innerHTML =
+          '<div class="error">Error loading listings. Please refresh the page.</div>';
+      }
+    }
+
+    function displayListings(listings) {
+      const container = document.getElementById('listings-container');
+
+      if (listings.length === 0) {
+        container.innerHTML = '<div class="no-results"><h3>No listings found</h3><p>Try adjusting your search filters.</p></div>';
+        return;
+      }
+
+      container.innerHTML = listings.map(listing => `
+        <div class="listing-card ${listing.featured ? 'featured' : ''}">
+          <div class="listing-content">
+            <h3>${escapeHtml(listing.name)}</h3>
+            <div class="listing-city">${escapeHtml(listing.city)}, Alabama</div>
+
+            ${listing.service_types && listing.service_types.length > 0 ? `
+              <div class="service-tags">
+                ${listing.service_types.map(service =>
+                  `<span class="service-tag">${escapeHtml(service)}</span>`
+                ).join('')}
+              </div>
+            ` : ''}
+
+            <div class="listing-contact">
+              ${listing.phone ? `
+                <div class="contact-item">
+                  <span>ð</span>
+                  <a href="tel:${listing.phone}">${listing.phone}</a>
+                </div>
+              ` : ''}
+
+              ${listing.website ? `
+                <div class="contact-item">
+                  <span>ð</span>
+                  <a href="${listing.website}" target="_blank">Visit Website</a>
+                </div>
+              ` : ''}
+
+              ${listing.google_maps_url ? `
+                <div class="contact-item">
+                  <span>ð</span>
+                  <a href="${listing.google_maps_url}" target="_blank">View on Maps</a>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterListings() {
+      const cityFilter = document.getElementById('city-filter').value.toLowerCase();
+      const serviceFilter = document.getElementById('service-filter').value.toLowerCase();
+
+      const filtered = allListings.filter(listing => {
+        const matchesCity = !cityFilter || listing.city.toLowerCase().includes(cityFilter);
+        const matchesService = !serviceFilter ||
+          (listing.service_types && listing.service_types.some(s => s.toLowerCase().includes(serviceFilter)));
+        return matchesCity && matchesService;
+      });
+
+      displayListings(filtered);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Load listings on page load
+    document.addEventListener('DOMContentLoaded', loadListings);
+
+    // Allow Enter key to search
+    document.getElementById('city-filter').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') filterListings();
+    });
+  </script>
+</body>
+</html>
