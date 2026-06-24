@@ -124,7 +124,7 @@
     }
 
     .listing-card.featured::before {
-      content: 'â­ FEATURED';
+      content: 'Ã¢Â­Â FEATURED';
       display: block;
       background: #F2B759;
       color: #1a1a1a;
@@ -351,21 +351,21 @@
             <div class="listing-contact">
               ${listing.phone ? `
                 <div class="contact-item">
-                  <span>ð</span>
+                  <span>&#128222;</span>
                   <a href="tel:${listing.phone}">${listing.phone}</a>
                 </div>
               ` : ''}
 
               ${listing.website ? `
                 <div class="contact-item">
-                  <span>ð</span>
+                  <span>&#127760;</span>
                   <a href="${listing.website}" target="_blank">Visit Website</a>
                 </div>
               ` : ''}
 
               ${listing.google_maps_url ? `
                 <div class="contact-item">
-                  <span>ð</span>
+                  <span>&#128205;</span>
                   <a href="${listing.google_maps_url}" target="_blank">View on Maps</a>
                 </div>
               ` : ''}
