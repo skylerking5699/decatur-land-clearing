@@ -124,7 +124,7 @@
     }
 
     .listing-card.featured::before {
-      content: 'Ã¢Â­Â FEATURED';
+      content: '\2B50 FEATURED';
       display: block;
       background: #F2B759;
       color: #1a1a1a;
@@ -249,7 +249,7 @@
 </head>
 <body>
   <header>
-    <h1>ð Morgan County Clearing Directory</h1>
+    <h1>&#128668; Morgan County Clearing Directory</h1>
     <p>Find trusted land clearing, brush hogging, and outdoor services in Morgan County, Alabama</p>
   </header>
 
@@ -328,47 +328,37 @@
 
     function displayListings(listings) {
       const container = document.getElementById('listings-container');
-
       if (listings.length === 0) {
         container.innerHTML = '<div class="no-results"><h3>No listings found</h3><p>Try adjusting your search filters.</p></div>';
         return;
       }
-
       container.innerHTML = listings.map(listing => `
         <div class="listing-card ${listing.featured ? 'featured' : ''}">
           <div class="listing-content">
             <h3>${escapeHtml(listing.name)}</h3>
             <div class="listing-city">${escapeHtml(listing.city)}, Alabama</div>
-
             ${listing.service_types && listing.service_types.length > 0 ? `
               <div class="service-tags">
                 ${listing.service_types.map(service =>
                   `<span class="service-tag">${escapeHtml(service)}</span>`
                 ).join('')}
-              </div>
-            ` : ''}
-
+              </div>` : ''}
             <div class="listing-contact">
               ${listing.phone ? `
                 <div class="contact-item">
                   <span>&#128222;</span>
-                  <a href="tel:${listing.phone}">${listing.phone}</a>
-                </div>
-              ` : ''}
-
+                  <a href="tel:${listing.phone~Â>${listing.phone}</a>
+                </div>` : ''}
               ${listing.website ? `
                 <div class="contact-item">
                   <span>&#127760;</span>
                   <a href="${listing.website}" target="_blank">Visit Website</a>
-                </div>
-              ` : ''}
-
+                </div>` : ''}
               ${listing.google_maps_url ? `
                 <div class="contact-item">
                   <span>&#128205;</span>
                   <a href="${listing.google_maps_url}" target="_blank">View on Maps</a>
-                </div>
-              ` : ''}
+                </div>` : ''}
             </div>
           </div>
         </div>
@@ -378,14 +368,12 @@
     function filterListings() {
       const cityFilter = document.getElementById('city-filter').value.toLowerCase();
       const serviceFilter = document.getElementById('service-filter').value.toLowerCase();
-
       const filtered = allListings.filter(listing => {
         const matchesCity = !cityFilter || listing.city.toLowerCase().includes(cityFilter);
         const matchesService = !serviceFilter ||
           (listing.service_types && listing.service_types.some(s => s.toLowerCase().includes(serviceFilter)));
         return matchesCity && matchesService;
       });
-
       displayListings(filtered);
     }
 
@@ -395,10 +383,7 @@
       return div.innerHTML;
     }
 
-    // Load listings on page load
     document.addEventListener('DOMContentLoaded', loadListings);
-
-    // Allow Enter key to search
     document.getElementById('city-filter').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') filterListings();
     });
